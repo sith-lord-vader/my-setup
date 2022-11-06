@@ -8,7 +8,6 @@
   imports =
     [ # Include the results of the hardware scan.
       /etc/nixos/hardware-configuration.nix
-      <home-manager/nixos>
     ];
  
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -104,7 +103,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    wget
     git
     google-chrome
     vscode
@@ -140,10 +139,9 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  services.fprintd.enable = true;
-  security.pam.services.login.fprintAuth = true;
-  security.pam.services.xscreensaver.fprintAuth = true;
-
+  # services.fprintd.enable = true;
+  # security.pam.services.login.fprintAuth = true;
+  security.sudo.wheelNeedsPassword = false;
   services.gnome.gnome-keyring.enable = true;
 
   # Open ports in the firewall.
