@@ -84,7 +84,7 @@
   users.users.xpert = {
     isNormalUser = true;
     description = "Abhishek Adhikari";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       firefox
       kate
@@ -143,6 +143,8 @@
   # security.pam.services.login.fprintAuth = true;
   security.sudo.wheelNeedsPassword = false;
   services.gnome.gnome-keyring.enable = true;
+
+  virtualisation.docker.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
