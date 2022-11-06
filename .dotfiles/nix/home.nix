@@ -14,9 +14,18 @@
           ns = "nix-shell --pure";
           please = "sudo";
         };
+        zplug = {
+          enable = true;
+          plugins = [
+            { name = "zsh-users/zsh-autosuggestions"; }
+            { name = "zsh-users/zsh-syntax-highlighting"; }
+            { name = "zdharma-continuum/fast-syntax-highlighting"; }
+            { name = "marlonrichert/zsh-autocomplete"; tags = [ depth:1 ]; }
+          ];
+        };
         oh-my-zsh = {
           enable = true;
-          plugins = [ "git" "systemd" "rsync" "kubectl" ];
+          plugins = [ "git" "zsh-autosuggestions" "zsh-syntax-highlighting" "fast-syntax-highlighting" "zsh-autocomplete" "py" "vscode" "docker" ];
           theme = "terminalparty";
         };
       };

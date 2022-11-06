@@ -112,9 +112,12 @@
     bitwarden-cli
     home-manager
     zsh
+    zsh-autosuggestions
+    zsh-syntax-highlighting
     oh-my-zsh
     openvpn
     discord
+    docker
   ];
 
   environment.etc.openvpn.source = "${pkgs.update-resolv-conf}/libexec/openvpn";
