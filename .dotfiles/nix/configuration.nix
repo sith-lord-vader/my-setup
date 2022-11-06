@@ -132,9 +132,11 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  # services.fprintd.enable = true;
-  # security.pam.services.login.fprintAuth = true;
-  # security.pam.services.xscreensaver.fprintAuth = true;
+  services.fprintd.enable = true;
+  security.pam.services.login.fprintAuth = true;
+  security.pam.services.xscreensaver.fprintAuth = true;
+
+  services.gnome3.gnome-keyring.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
