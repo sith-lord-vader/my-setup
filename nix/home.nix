@@ -6,6 +6,7 @@
         enableCompletion = false; # enabled in oh-my-zsh
         initExtra = ''
           test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
+          source ~/.my-setup/nix/extra.sh
         '';
         shellAliases = {
           ne = "nix-env";
@@ -13,6 +14,7 @@
           no = "nixops";
           ns = "nix-shell --pure";
           please = "sudo";
+          cls = "clear";
         };
         zplug = {
           enable = true;
@@ -25,8 +27,8 @@
         };
         oh-my-zsh = {
           enable = true;
-          plugins = [ "git" "zsh-autosuggestions" "zsh-syntax-highlighting" "fast-syntax-highlighting" "zsh-autocomplete" "py" "vscode" "docker" ];
-          theme = "terminalparty";
+          plugins = [ "git" "python" "vscode" "docker" ];
+          theme = "agnoster";
         };
       };
     };
