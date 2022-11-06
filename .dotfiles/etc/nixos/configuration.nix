@@ -114,6 +114,8 @@
   ];
 
   environment.etc.openvpn.source = "${pkgs.update-resolv-conf}/libexec/openvpn";
+
+  programs.ssh.startAgent = true;
  
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
