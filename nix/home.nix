@@ -7,6 +7,7 @@
         initExtra = ''
           test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
           source ~/.my-setup/nix/extra.sh
+          source ~/.my-setup/shell/zsh.sh
         '';
         shellAliases = {
           ne = "nix-env";
