@@ -8,6 +8,7 @@
           test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
           source ~/.my-setup/nix/extra.sh
           source ~/.my-setup/shell/zsh.sh
+          neofetch
         '';
         shellAliases = {
           ne = "nix-env";
@@ -23,6 +24,7 @@
             { name = "zsh-users/zsh-autosuggestions"; }
             { name = "zsh-users/zsh-syntax-highlighting"; }
             { name = "zdharma-continuum/fast-syntax-highlighting"; }
+            { name = "sobolevn/wakatime-zsh-plugin"; }
             { name = "marlonrichert/zsh-autocomplete"; tags = [ depth:1 ]; }
           ];
         };

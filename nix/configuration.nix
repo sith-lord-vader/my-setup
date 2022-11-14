@@ -1,14 +1,19 @@
-{ config, pkgs, ... }:
+{ config, pkgs, bulla, ... }:
 
 {
   imports =
     [
       /etc/nixos/hardware-configuration.nix
     ];
+
+  nixpkgs.overlays = [
+    (_: _: { bulla-agent = bulla.defaultPackage.x86_64-linux; })
+  ];
  
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   virtualisation.docker.enable = true;
+  services.flatpak.enable = true;
 
   #*----Bootloader----
   # boot.loader.systemd-boot.enable = true;
@@ -33,7 +38,7 @@
 
   #*----General Settings----
   time.timeZone = "Asia/Kolkata";
-  i18n.defaultLocale = "en_IN.utf8";
+  i18n.defaultLocale = "en_IN";
   services.printing.enable = true;
   #!----General Settings----
 
@@ -102,6 +107,9 @@
     docker
     anydesk
     openssl
+    wakatime
+    neofetch
+    pkgs.bulla-agent
   ];
   #!----System Packages----
 
@@ -111,7 +119,7 @@
 
   #*----SSH Setup----
   programs.ssh.startAgent = true;
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
   #!----SSH Setup
 
   programs.zsh.enable = true;
@@ -123,6 +131,8 @@
   security.sudo.wheelNeedsPassword = false;
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
+
+  # services.bulla-agent.enable = true;
 
   #*----Firewall----
   # networking.firewall.allowedTCPPorts = [ ... ];
