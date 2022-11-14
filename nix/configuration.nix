@@ -3,6 +3,7 @@
 {
   imports =
     [
+      bulla.nixosModules
       /etc/nixos/hardware-configuration.nix
     ];
 
@@ -132,7 +133,7 @@
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
 
-  # services.bulla-agent.enable = true;
+  services.bulla-agent.enable = true;
 
   #*----Firewall----
   # networking.firewall.allowedTCPPorts = [ ... ];
