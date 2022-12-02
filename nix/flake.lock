@@ -1,0 +1,219 @@
+{
+  "nodes": {
+    "bulla": {
+      "inputs": {
+        "ixnay-base": "ixnay-base",
+        "nixpkgs": "nixpkgs",
+        "utils": "utils"
+      },
+      "locked": {
+        "lastModified": 1668516397,
+        "narHash": "sha256-ORmyrOW9+O3xFn4vq5a5jPVy9LMWcCmgOD6ZzKir5yk=",
+        "ref": "master",
+        "rev": "88ea6bdd23c8e1eedc6e6f023d8313711cb7780a",
+        "revCount": 29,
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller"
+      },
+      "original": {
+        "ref": "master",
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller"
+      }
+    },
+    "gitit-wiki": {
+      "inputs": {
+        "ixnay-base": "ixnay-base_2",
+        "nixpkgs": "nixpkgs_2",
+        "utils": "utils_2"
+      },
+      "locked": {
+        "lastModified": 0,
+        "narHash": "sha256-SwyWKs4fCQF009smX+/pnHVeZcMflpNOtKEjf7Lj/Ic=",
+        "path": "/home/xpert/Work/gitit-config",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xpert/Work/gitit-config",
+        "type": "path"
+      }
+    },
+    "ixnay-base": {
+      "inputs": {
+        "nixpkgs": [
+          "bulla",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1666796705,
+        "narHash": "sha256-Qyd9+Vf21jZv3h8x/pSA1XplhFZCJq+3z77gtQ//PEI=",
+        "ref": "master",
+        "rev": "2d84e3ca20e1c224b0aa388eb8e23dee9bec7b84",
+        "revCount": 88,
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      }
+    },
+    "ixnay-base_2": {
+      "inputs": {
+        "nixpkgs": [
+          "gitit-wiki",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1668316919,
+        "narHash": "sha256-l5NA8slfr/8a7CK+ZBKKNoJnyFf4SCVNnM4EeekE/9Y=",
+        "ref": "refs/heads/master",
+        "rev": "4c8027f4b75faf99db04ba6e59442b631d6bbceb",
+        "revCount": 104,
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1667653703,
+        "narHash": "sha256-Xow4vx52/g5zkhlgZnMEm/TEXsj+13jTPCc2jIhW1xU=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f09ad462c5a121d0239fde645aacb2221553a217",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1668543224,
+        "narHash": "sha256-wKeb21iBIV7ggdWGcs0y0kXWCJrNfQjpl5k6Q3rikXA=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "814f8f3363cecee7cce314286846e4da5e92d689",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1669920164,
+        "narHash": "sha256-+3DM3bi/c/6MSCGDwAqqlpYHhOuKTL0bH7Xf4UmScdI=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "97e88a936cf18bc8a2c6cf65e4ec8d423e4cb743",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1669920164,
+        "narHash": "sha256-+3DM3bi/c/6MSCGDwAqqlpYHhOuKTL0bH7Xf4UmScdI=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "97e88a936cf18bc8a2c6cf65e4ec8d423e4cb743",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "bulla": "bulla",
+        "gitit-wiki": "gitit-wiki",
+        "nixpkgs": "nixpkgs_3",
+        "test": "test"
+      }
+    },
+    "test": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_4",
+        "utils": "utils_3"
+      },
+      "locked": {
+        "lastModified": 1669992119,
+        "narHash": "sha256-v5rhhEPkcxF0ppQQagtbj6qasGOYD2Y5RCfYuah9FQc=",
+        "path": "/home/xpert/Work/nix-pkg-module-boilerplate",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/xpert/Work/nix-pkg-module-boilerplate",
+        "type": "path"
+      }
+    },
+    "utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "utils_2": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "utils_3": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

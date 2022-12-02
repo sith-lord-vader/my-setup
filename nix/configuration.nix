@@ -120,7 +120,7 @@
     wakatime
     neofetch
     pkgs.bulla-agent
-    pkgs.gitit-wiki
+    # pkgs.gitit-wiki
     pkgs.test
   ];
   #!----System Packages----
@@ -150,18 +150,18 @@
     address = "0.0.0.0";
     port = "9999";
   };
-  services.gitit-wiki.enable = true;
+  services.gitit-wiki.enable = false;
 
   services.pkg_name =
     {
-      enable = true;
+      enable = false;
       example_option = "Please visit lordvader.me";
-    }
+    };
 
-      #*----Firewall----
-      # networking.firewall.allowedTCPPorts = [ ... ];
-      # networking.firewall.allowedUDPPorts = [ ... ];
-      networking.firewall.enable = false;
+  #*----Firewall----
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.enable = false;
   #!----Firewall----
 
   system.stateVersion = "22.05";
