@@ -1,16 +1,15 @@
-{ config, pkgs, bulla, ... }:
+{ config, pkgs, bulla, gitit-wiki, test, ... }:
 
 {
   imports =
     [
-      bulla.nixosModules
-      /etc/nixos/hardware-configuration.nix
+      ./machine/mnet.nix
     ];
 
   nixpkgs.overlays = [
-    (_: _: { bulla-agent = bulla.defaultPackage.x86_64-linux; })
+    (_: _: { bulla-agent = bulla.defaultPackage.x86_64-linux; test = test.defaultPackage.x86_64-linux; gitit-wiki = gitit-wiki.defaultPackage.x86_64-linux; })
   ];
- 
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   virtualisation.docker.enable = true;
@@ -21,7 +20,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
   boot.loader.grub = {
-    devices = ["nodev"];
+    devices = [ "nodev" ];
     enable = true;
     version = 2;
     useOSProber = true;
@@ -35,6 +34,16 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   networking.networkmanager.enable = true;
+  networking.domain = "vader";
+  networking.extraHosts =
+    ''
+      172.16.0.1 lord.vader
+      172.16.0.100 nitro-5-win.vader
+      172.16.0.101 nixos.vader
+      172.16.0.102 abhishek-s22.vader
+      172.16.0.110 kartos.vader
+      172.16.0.120 oldmonk.vader
+    '';
   #!----Networking----
 
   #*----General Settings----
@@ -111,6 +120,8 @@
     wakatime
     neofetch
     pkgs.bulla-agent
+    pkgs.gitit-wiki
+    pkgs.test
   ];
   #!----System Packages----
 
@@ -124,7 +135,7 @@
   #!----SSH Setup
 
   programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;  
+  users.defaultUserShell = pkgs.zsh;
 
   #*----User Access Settings----
   # services.fprintd.enable = true;
@@ -133,13 +144,25 @@
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
 
-  services.bulla-agent.enable = true;
+  services.stormtrooper = {
+    enable = true;
+    hostname = "nixos";
+    address = "0.0.0.0";
+    port = "9999";
+  };
+  services.gitit-wiki.enable = true;
 
-  #*----Firewall----
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  networking.firewall.enable = false;
+  services.pkg_name =
+    {
+      enable = true;
+      example_option = "Please visit lordvader.me";
+    }
+
+      #*----Firewall----
+      # networking.firewall.allowedTCPPorts = [ ... ];
+      # networking.firewall.allowedUDPPorts = [ ... ];
+      networking.firewall.enable = false;
   #!----Firewall----
 
-  system.stateVersion = "22.05"; 
+  system.stateVersion = "22.05";
 }
