@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs = { url = "github:nixos/nixpkgs/nixos-22.05"; };
+  inputs.nixpkgs = { url = "github:nixos/nixpkgs/nixos-22.11"; };
   inputs.bulla = { url = "git+ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller?ref=master"; };
   inputs.gitit-wiki = { url = "path:/home/xpert/Work/gitit-config"; };
   inputs.test = { url = "path:/home/xpert/Work/nix-pkg-module-boilerplate"; };

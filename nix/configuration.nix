@@ -1,13 +1,14 @@
-{ config, pkgs, bulla, gitit-wiki, test, ... }:
+{ config, pkgs, test, ... }:
 
 {
   imports =
     [
       ./machine/mnet.nix
+      ./modules/wireguard.nix
     ];
 
   nixpkgs.overlays = [
-    (_: _: { bulla-agent = bulla.defaultPackage.x86_64-linux; test = test.defaultPackage.x86_64-linux; gitit-wiki = gitit-wiki.defaultPackage.x86_64-linux; })
+    (_: _: { test = test.defaultPackage.x86_64-linux; })
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -119,8 +120,10 @@
     openssl
     wakatime
     neofetch
-    pkgs.bulla-agent
-    # pkgs.gitit-wiki
+    wireguard-tools
+    conda
+    ksshaskpass
+    obs-studio
     pkgs.test
   ];
   #!----System Packages----
@@ -144,14 +147,6 @@
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
 
-  services.stormtrooper = {
-    enable = true;
-    hostname = "nixos";
-    address = "0.0.0.0";
-    port = "9999";
-  };
-  services.gitit-wiki.enable = false;
-
   services.pkg_name =
     {
       enable = false;
@@ -163,6 +158,58 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = false;
   #!----Firewall----
+
+  # programs.steam = {
+  #   enable = true;
+  # };
+
+  services.jupyterhub =
+    {
+      enable = true;
+    };
+
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
+  services.prometheus =
+    {
+      exporters = {
+        node = {
+          enable = true;
+          enabledCollectors = [ "systemd" ];
+          port = 9002;
+        };
+      };
+    };
+
+  networking.wireguard.interfaces = {
+    # "wg0" is the network interface name. You can name the interface arbitrarily.
+    wg0 = {
+      # Determines the IP address and subnet of the client's end of the tunnel interface.
+      ips = [ "172.16.0.101/24" ];
+
+      # Path to the private key file.
+      #
+      # Note: The private key can also be included inline via the privateKey option,
+      # but this makes the private key world-readable; thus, using privateKeyFile is
+      # recommended.
+      privateKeyFile = "/home/xpert/wireguard-keys/private";
+
+      peers = [
+        {
+          publicKey = "vRc4CjH7bmHJ0Z6FPUdRO9541yLV8X3UZ11gapE7w2w=";
+
+          allowedIPs = [ "172.16.0.0/24" ];
+
+          endpoint = "172.105.47.207:33333";
+
+          persistentKeepalive = 25;
+        }
+      ];
+    };
+  };
 
   system.stateVersion = "22.05";
 }
