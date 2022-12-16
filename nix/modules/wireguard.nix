@@ -16,11 +16,11 @@
 
       peers = [
         {
-          publicKey = "<public_key>";
+          publicKey = "vRc4CjH7bmHJ0Z6FPUdRO9541yLV8X3UZ11gapE7w2w=";
 
           allowedIPs = [ "172.16.0.0/24" ];
 
-          endpoint = "<ip/hostname>:<port>";
+          endpoint = "172.105.47.207:33333";
 
           persistentKeepalive = 25;
         }
