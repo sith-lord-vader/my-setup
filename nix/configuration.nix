@@ -101,6 +101,7 @@
 
   #*----System Packages----
   environment.systemPackages = with pkgs; [
+    #*---work---
     wget
     git
     google-chrome
@@ -114,17 +115,26 @@
     zsh-syntax-highlighting
     oh-my-zsh
     openvpn
-    discord
     docker
     anydesk
     openssl
     wakatime
     neofetch
     wireguard-tools
-    conda
     ksshaskpass
+    #!---work---
+
+    #*---misc---
+    discord
     obs-studio
+    ffmpeg
+    yt-dlp
+    mpv
+    #!---misc---
+
+    #*---test pkgs---
     pkgs.test
+    #!---test pkgs---
   ];
   #!----System Packages----
 
@@ -159,20 +169,12 @@
   networking.firewall.enable = false;
   #!----Firewall----
 
-  # programs.steam = {
-  #   enable = true;
-  # };
-
   services.jupyterhub =
     {
       enable = true;
     };
 
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
+  #*---settings node-exporter---
   services.prometheus =
     {
       exporters = {
@@ -183,6 +185,7 @@
         };
       };
     };
+  #!---settings node-exporter---
 
   system.stateVersion = "22.05";
 }
