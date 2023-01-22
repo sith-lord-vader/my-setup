@@ -1,12 +1,33 @@
 {
   "nodes": {
+    "ixnay-base": {
+      "inputs": {
+        "nixpkgs": [
+          "systemd-controller",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1666796705,
+        "narHash": "sha256-Qyd9+Vf21jZv3h8x/pSA1XplhFZCJq+3z77gtQ//PEI=",
+        "ref": "master",
+        "rev": "2d84e3ca20e1c224b0aa388eb8e23dee9bec7b84",
+        "revCount": 88,
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/ixnay-base"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1669834992,
-        "narHash": "sha256-YnhZGHgb4C3Q7DSGisO/stc50jFb9F/MzHeKS4giotg=",
+        "lastModified": 1671313200,
+        "narHash": "sha256-itZTrtHeDJjV696+ur0/TzkTqb5y3Eb57WRLRPK3rwA=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "596a8e828c5dfa504f91918d0fa4152db3ab5502",
+        "rev": "0938d73bb143f4ae037143572f11f4338c7b2d1c",
         "type": "github"
       },
       "original": {
@@ -17,6 +38,22 @@
       }
     },
     "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1667653703,
+        "narHash": "sha256-Xow4vx52/g5zkhlgZnMEm/TEXsj+13jTPCc2jIhW1xU=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f09ad462c5a121d0239fde645aacb2221553a217",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
       "locked": {
         "lastModified": 1669920164,
         "narHash": "sha256-+3DM3bi/c/6MSCGDwAqqlpYHhOuKTL0bH7Xf4UmScdI=",
@@ -35,13 +72,34 @@
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
+        "systemd-controller": "systemd-controller",
         "test": "test"
+      }
+    },
+    "systemd-controller": {
+      "inputs": {
+        "ixnay-base": "ixnay-base",
+        "nixpkgs": "nixpkgs_2",
+        "utils": "utils"
+      },
+      "locked": {
+        "lastModified": 1671539360,
+        "narHash": "sha256-gcjE5cym/R3kEM0NmzSGusufPv5d/HEMXDLu6pBYKPU=",
+        "ref": "refs/heads/master",
+        "rev": "bb77a2dcdeed3f421c606164a2bf249d0ddaf240",
+        "revCount": 41,
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller.git"
       }
     },
     "test": {
       "inputs": {
-        "nixpkgs": "nixpkgs_2",
-        "utils": "utils"
+        "nixpkgs": "nixpkgs_3",
+        "utils": "utils_2"
       },
       "locked": {
         "lastModified": 1669993366,
@@ -58,6 +116,21 @@
       }
     },
     "utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "utils_2": {
       "locked": {
         "lastModified": 1667395993,
         "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",

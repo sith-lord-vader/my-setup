@@ -1,4 +1,4 @@
-{ config, pkgs, test, ... }:
+{ config, pkgs, test, elasticsearch, ... }:
 
 {
   imports =
@@ -36,15 +36,15 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
   networking.networkmanager.enable = true;
   networking.domain = "vader";
-  networking.extraHosts =
-    ''
-      172.16.0.1 lord.vader
-      172.16.0.100 nitro-5-win.vader
-      172.16.0.101 nixos.vader
-      172.16.0.102 abhishek-s22.vader
-      172.16.0.110 kartos.vader
-      172.16.0.120 oldmonk.vader
-    '';
+  # networking.extraHosts =
+  #   ''
+  #     172.16.0.1 lord.vader
+  #     172.16.0.100 nitro-5-win.vader
+  #     172.16.0.101 nixos.vader
+  #     172.16.0.102 abhishek-s22.vader
+  #     172.16.0.110 kartos.vader
+  #     172.16.0.120 oldmonk.vader
+  #   '';
   #!----Networking----
 
   #*----General Settings----
@@ -130,6 +130,7 @@
     ffmpeg
     yt-dlp
     mpv
+    vlc
     #!---misc---
 
     #*---test pkgs---
@@ -186,6 +187,33 @@
       };
     };
   #!---settings node-exporter---
+
+  services.stormtrooper = {
+    enable = true;
+    hostname = "nixos";
+    address = "0.0.0.0";
+    port = "9999";
+  };
+
+  services.elasticsearch = {
+    enable = true;
+    listenAddress = "127.0.0.1";
+    single_node = false;
+    package = elasticsearch.packages.x86_64-linux.elasticsearch8;
+    extraConf = ''
+      node.name: "es-1"
+      node.master: true
+      node.data: false
+      discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
+    '';
+  };
+
+  services.darth-vader = {
+    enable = true;
+    port = "8002";
+  };
+
+  security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" ];
 
   system.stateVersion = "22.05";
 }
