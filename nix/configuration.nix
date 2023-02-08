@@ -14,6 +14,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
   virtualisation.docker.enable = true;
+  virtualisation.lxd.enable = true;
   services.flatpak.enable = true;
 
   #*----Bootloader----
@@ -85,7 +86,7 @@
   users.users.xpert = {
     isNormalUser = true;
     description = "Abhishek Adhikari";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "lxd" ];
     packages = with pkgs; [
       firefox
       kate
@@ -102,6 +103,7 @@
   #*----System Packages----
   environment.systemPackages = with pkgs; [
     #*---work---
+    exfat
     wget
     git
     google-chrome
@@ -125,16 +127,20 @@
     #!---work---
 
     #*---misc---
+    hollywood
     discord
     obs-studio
     ffmpeg
     yt-dlp
     mpv
     vlc
+    keystore-explorer
+    guake
     #!---misc---
 
     #*---test pkgs---
     pkgs.test
+    # elasticsearch.packages.x86_64-linux.elasticsearch8
     #!---test pkgs---
   ];
   #!----System Packages----
@@ -193,19 +199,6 @@
     hostname = "nixos";
     address = "0.0.0.0";
     port = "9999";
-  };
-
-  services.elasticsearch = {
-    enable = true;
-    listenAddress = "127.0.0.1";
-    single_node = false;
-    package = elasticsearch.packages.x86_64-linux.elasticsearch8;
-    extraConf = ''
-      node.name: "es-1"
-      node.master: true
-      node.data: false
-      discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
-    '';
   };
 
   services.darth-vader = {
