@@ -3,12 +3,24 @@
   inputs.test = { url = "github:abhishekadhikari23/nix-pkg-module-boilerplate"; };
   inputs.systemd-controller = { url = "git+ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller.git"; };
   inputs.elasticsearch = { url = "path:/home/xpert/Work/es8-deploy"; };
-  outputs = { self, nixpkgs, test, systemd-controller, elasticsearch }:
+  inputs.vscode-server.url = "github:msteen/nixos-vscode-server";
+  outputs = { self, nixpkgs, test, systemd-controller, elasticsearch, vscode-server }:
     let
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ test.nixosModules.module_name systemd-controller.nixosModules.darth-vader systemd-controller.nixosModules.stormtrooper ./configuration.nix ];
+        modules = [ 
+          test.nixosModules.module_name 
+          elasticsearch.nixosModules.kibana8 
+          systemd-controller.nixosModules.darth-vader 
+          systemd-controller.nixosModules.stormtrooper 
+          vscode-server.nixosModule
+          ({ config, pkgs, ... }: {
+            services.vscode-server.enable = true;
+            services.vscode-server.enableFHS = true;
+          })
+          ./configuration.nix
+        ];
         specialArgs = { inherit test; inherit elasticsearch; };
       };
     };

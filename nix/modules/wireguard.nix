@@ -4,17 +4,17 @@
   networking.wg-quick.interfaces = {
     wg0 = {
       address = [ "172.16.0.101/24" ];
-      dns = [ "172.16.0.1" "vader" ];
+      dns = [ "172.16.0.1" "1.1.1.1" "vader" ];
       privateKeyFile = "/home/xpert/wireguard-keys/private";
 
 
       peers = [
         {
-          publicKey = "vRc4CjH7bmHJ0Z6FPUdRO9541yLV8X3UZ11gapE7w2w=";
+          publicKey = "clo2h2ycKaGuN8MboSOlh0u4skZiHH2mgdI5awY58Hg=";
 
           allowedIPs = [ "172.16.0.0/24" ];
 
-          endpoint = "172.105.47.207:33333";
+          endpoint = "13.126.180.164:51820";
 
           persistentKeepalive = 25;
         }

@@ -86,11 +86,15 @@
   users.users.xpert = {
     isNormalUser = true;
     description = "Abhishek Adhikari";
-    extraGroups = [ "networkmanager" "wheel" "docker" "lxd" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "lxd" "rslsync" "nginx" ];
     packages = with pkgs; [
       firefox
       kate
     ];
+  };
+
+  users.users.rslsync = {
+    extraGroups = [ "shared" ];
   };
   #!----User Account----
 
@@ -136,6 +140,7 @@
     vlc
     keystore-explorer
     guake
+    cool-retro-term
     #!---misc---
 
     #*---test pkgs---
@@ -176,10 +181,56 @@
   networking.firewall.enable = false;
   #!----Firewall----
 
-  services.jupyterhub =
-    {
-      enable = true;
-    };
+  # jupyterhub-yarnspawner = pkgs.python3Packages.buildPythonPackage rec {
+  #   pname = "jupyterhub-yarnspawner";
+  #   version = "0.4.0";
+
+  #   src = pkgs.python37Packages.fetchPypi {
+  #     inherit version;
+  #     inherit pname;
+  #     sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
+  #   };
+
+  #   buildInputs = [ pkgs.python3Packages.jupyterhub pkgs.python3Packages.skein ];
+  # };
+
+  #!----Jupyterhub----
+  # services.jupyterhub =
+  #   {
+  #     enable = true;
+  #     jupyterhubEnv = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
+  #       jupyterhub
+  #       skein
+  #       jupyterlab
+  #       (pkgs.python3Packages.buildPythonPackage rec {
+  #         pname = "yarnspawner";
+  #         version = "0.4.0";
+
+  #         src = pkgs.python37Packages.fetchPypi {
+  #           inherit version;
+  #           pname = "jupyterhub-yarnspawner";
+  #           sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
+  #         };
+
+  #         doCheck = false;
+
+  #         buildInputs = [ pkgs.python3Packages.jupyterhub pkgs.python3Packages.skein pkgs.python3Packages.pytest pkgs.python3Packages.notebook pkgs.python3Packages.jupyterhub pkgs.python3Packages.jupyterlab ];
+  #       })
+  #     ]));
+  #     extraConfig = ''
+  #       c.JupyterHub.spawner_class = 'yarnspawner.YarnSpawner'
+  #       c.JupyterHub.hub_ip = '172.16.1.101'
+  #       c.YarnSpawner.debug = True
+  #       c.YarnSpawner.localize_files = {
+  #           'environment': {
+  #               'source': 'hdfs://172-105-50-66.ip.linodeusercontent.com:9000/jupyterhub/env.tar.gz',
+  #               'visibility': 'public'
+  #           }
+  #       }
+  #       c.YarnSpawner.prologue = 'source environment/bin/activate'
+  #     '';
+  #   };
+  #!------------------
 
   #*---settings node-exporter---
   services.prometheus =
@@ -206,7 +257,72 @@
     port = "8002";
   };
 
-  security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" ];
+  services.resilio = {
+    enable = true;
+    httpListenPort = 6969;
+    enableWebUI = true;
+  };
+
+  services.nginx = {
+    enable = true;
+    group = "nginx";
+    recommendedGzipSettings = true;
+    recommendedOptimisation = true;
+    # upstreams.adc-data-es-upstreams.servers = {
+    #   "172.20.32.183:9200" = {};
+    #   "172.20.32.184:9200" = {};
+    #   "172.20.32.185:9200" = {};
+    # };
+
+    virtualHosts."resilio.xpert-nixos-local.vader" = {
+      addSSL = true;
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = 443;
+          ssl = true;
+        }
+        {
+          addr = "0.0.0.0";
+          port = 80;
+        }
+      ];
+      sslCertificate = "/etc/MyCert.crt";
+      sslCertificateKey = "/etc/MyPrivate.key";
+      locations."/" = {
+        proxyPass = "http://localhost:6969";
+      };
+    };
+
+    virtualHosts."resilio.xpert-nixos.vader" = {
+      addSSL = true;
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = 443;
+          ssl = true;
+        }
+        {
+          addr = "0.0.0.0";
+          port = 80;
+        }
+      ];
+      sslCertificate = "/etc/MyCertMain.crt";
+      sslCertificateKey = "/etc/MyPrivate.key";
+      locations."/" = {
+        proxyPass = "http://localhost:6969";
+      };
+    };
+  };
+
+  security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];
+
+  # services.kibana8 = {
+  #   enable = true;
+  #   package = elasticsearch.packages.x86_64-linux.kibana8;
+  #   listenAddress = "0.0.0.0";
+  #   elasticsearch.hosts = ["http://172.20.32.183:9200" "http://172.20.32.184:9200" "http://172.20.32.185:9200"];
+  # };
 
   system.stateVersion = "22.05";
 }
