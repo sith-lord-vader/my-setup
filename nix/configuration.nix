@@ -1,4 +1,4 @@
-{ config, pkgs, test, elasticsearch, ... }:
+{ config, lib, pkgs, test, elasticsearch, ... }:
 
 {
   imports =
@@ -313,6 +313,14 @@
         proxyPass = "http://localhost:6969";
       };
     };
+  };
+
+  programs.nix-ld.enable = true;
+  environment.variables = {
+      NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+        pkgs.stdenv.cc.cc
+      ];
+      NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
   };
 
   security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];

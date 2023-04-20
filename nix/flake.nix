@@ -14,11 +14,15 @@
           elasticsearch.nixosModules.kibana8 
           systemd-controller.nixosModules.darth-vader 
           systemd-controller.nixosModules.stormtrooper 
-          vscode-server.nixosModule
-          ({ config, pkgs, ... }: {
-            services.vscode-server.enable = true;
-            services.vscode-server.enableFHS = true;
-          })
+          # vscode-server.nixosModule
+          # ({ config, pkgs, ... }: {
+          #   services.vscode-server.enable = true;
+          #   # services.vscode-server.enableFHS = true;
+          #   services.vscode-server.extraRuntimeDependencies = with pkgs; [
+          #     curl
+          #     git
+          #   ];
+          # })
           ./configuration.nix
         ];
         specialArgs = { inherit test; inherit elasticsearch; };

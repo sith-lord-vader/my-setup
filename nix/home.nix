@@ -5,6 +5,13 @@
         enable = true;
         enableCompletion = false; # enabled in oh-my-zsh
         initExtra = ''
+          # if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+          #   # ~/.profile is run by the login shell (this is what ssh uses)
+          #   # ~/.bashrc is run by the interactive shell (this is what vscode uses)
+          #   # Therefore, we only need to change the shell to zsh here since
+          #   # vscode will run ~/.bashrc for us.
+          #   exec bash
+          # fi
           test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
           source ~/.my-setup/nix/extra.sh
           source ~/.my-setup/shell/zsh.sh
