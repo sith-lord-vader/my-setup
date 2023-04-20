@@ -323,6 +323,37 @@
       NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
   };
 
+  services.hadoop = {
+    hdfs.namenode.enable = false;
+    hdfs.datanode.enable = false;
+    yarn.nodemanager.enable = false;
+    yarn.resourcemanager.enable = false;
+    # coreSite = {
+    # "fs.defaultFS" = "hdfs://127.0.0.1:9000";
+    # "yarn.scheduler.capacity.root.queues" = "default";
+    # "yarn.scheduler.capacity.root.default.capacity" = 100;
+    # }; 
+    # hdfsSite = { 
+    # "dfs.namenode.name.dir" = "/home/hadoop/data/nameNode";
+    # "dfs.datanode.data.dir" = "/home/hadoop/data/dataNode";
+    # "dfs.replication" = 1;
+    #     };
+    # yarnSite = {
+    # #"yarn.nodemanager.hostname" = "127.0.0.1"; 
+    # "yarn.resourcemanager.hostname" = "127.0.0.1";
+    # "yarn.nodemanager.log-dirs" = "/home/hadoop/logs/nodemanager";
+    # "yarn.nodemanager.aux-services" = "mapreduce_shuffle";
+    # "yarn.acl.enable" = 0;
+    # };
+    # mapredSite = {
+    # "mapreduce.framework.name" = "yarn";
+    # "yarn.app.mapreduce.am.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+    # "mapreduce.map.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+    # "mapreduce.reduce.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+
+    # };
+  };
+
   security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];
 
   # services.kibana8 = {
