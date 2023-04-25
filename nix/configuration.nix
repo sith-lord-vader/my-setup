@@ -1,4 +1,4 @@
-{ config, lib, pkgs, test, elasticsearch, ... }:
+{ config, lib, pkgs, test, elasticsearch, jupyterhub1, ... }:
 
 {
   imports =
@@ -195,42 +195,164 @@
   # };
 
   #!----Jupyterhub----
-  # services.jupyterhub =
-  #   {
-  #     enable = true;
-  #     jupyterhubEnv = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
-  #       jupyterhub
-  #       skein
-  #       jupyterlab
-  #       (pkgs.python3Packages.buildPythonPackage rec {
-  #         pname = "yarnspawner";
-  #         version = "0.4.0";
-
-  #         src = pkgs.python37Packages.fetchPypi {
-  #           inherit version;
-  #           pname = "jupyterhub-yarnspawner";
-  #           sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
-  #         };
-
-  #         doCheck = false;
-
-  #         buildInputs = [ pkgs.python3Packages.jupyterhub pkgs.python3Packages.skein pkgs.python3Packages.pytest pkgs.python3Packages.notebook pkgs.python3Packages.jupyterhub pkgs.python3Packages.jupyterlab ];
-  #       })
-  #     ]));
-  #     extraConfig = ''
-  #       c.JupyterHub.spawner_class = 'yarnspawner.YarnSpawner'
-  #       c.JupyterHub.hub_ip = '172.16.1.101'
-  #       c.YarnSpawner.debug = True
-  #       c.YarnSpawner.localize_files = {
-  #           'environment': {
-  #               'source': 'hdfs://172-105-50-66.ip.linodeusercontent.com:9000/jupyterhub/env.tar.gz',
-  #               'visibility': 'public'
-  #           }
-  #       }
-  #       c.YarnSpawner.prologue = 'source environment/bin/activate'
-  #     '';
-  #   };
+#   services.jupyterhub =
+#     {
+#       enable = true;
+#       port = 8082;
+#       jupyterhubEnv = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
+#         pkgs.python3Packages.jupyterhub
+#         jupyterhub1.packages.x86_64-linux.skein
+#         jupyterlab
+#         jupyterhub1.packages.x86_64-linux.yarnspawner
+#       ]));
+#       extraConfig = ''
+#         c.JupyterHub.spawner_class = 'yarnspawner.YarnSpawner'
+#         c.JupyterHub.hub_ip = '127.0.0.1'
+#         c.YarnSpawner.debug = True
+#         c.YarnSpawner.localize_files = {
+#             'environment': {
+#                 'source': 'hdfs://localhost:9000/environments/example.tar.gz',
+#                 'visibility': 'public'
+#             }
+#         }
+#         c.YarnSpawner.prologue = 'source environment/bin/activate'
+#       '';
+#     };
   #!------------------
+
+    services.jupyterhub =
+    {
+      enable = true;
+      port = 8082;
+      spawner = "yarnspawner.YarnSpawner";
+      jupyterhubEnv = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
+        jupyterhub
+        (pkgs.python3Packages.buildPythonPackage rec {
+            pname = "skein";
+            version = "0.8.2";
+            src = pkgs.python3Packages.fetchPypi {
+                inherit pname version;
+                hash = "sha256-nXTqsJNX/LwAglPcPZkmdYPfF+vDLN+nNdZaDFTrHzE=";
+            };
+
+            # Update this hash if bumping versions
+            jarHash = "sha256-x2KH6tnoG7sogtjrJvUaxy0PCEA8q/zneuI969oBOKo=";
+            skeinJar = callPackage ./skeinjar.nix { inherit pname version jarHash; };
+
+            propagatedBuildInputs = [ pkgs.python3Packages.cryptography pkgs.python3Packages.grpcio pkgs.python3Packages.pyyaml ];
+            buildInputs = [ pkgs.python3Packages.grpcio-tools ];
+
+            patches = [ ./test.patch ];
+
+            preBuild = ''
+                # Ensure skein.jar exists skips the maven build in setup.py
+                mkdir -p skein/java
+                ln -s ${skeinJar} skein/java/skein.jar
+            '';
+
+            postPatch = ''
+                substituteInPlace skein/core.py --replace "'yarn'" "'${hadoop}/bin/yarn'" \
+                --replace "else 'java'" "else '${hadoop.jdk}/bin/java'"
+            '';
+
+            pythonImportsCheck = [ "skein" ];
+
+            checkInputs = [ pkgs.python3Packages.pytestCheckHook ];
+            # These tests require connecting to a YARN cluster. They could be done through NixOS tests later.
+            disabledTests = [
+                "test_ui"
+                "test_tornado"
+                "test_kv"
+                "test_core"
+                "test_cli"
+            ];
+
+            meta = with lib; {
+                homepage = "https://jcristharif.com/skein";
+                description = "A tool and library for easily deploying applications on Apache YARN";
+                license = licenses.bsd3;
+                maintainers = with maintainers; [ alexbiehl illustris ];
+                # https://github.com/NixOS/nixpkgs/issues/48663#issuecomment-1083031627
+                # replace with https://github.com/NixOS/nixpkgs/pull/140325 once it is merged
+            };
+        })
+        jupyterlab
+        (pkgs.python3Packages.buildPythonPackage rec {
+          pname = "yarnspawner";
+          version = "0.4.0";
+
+          src = pkgs.python37Packages.fetchPypi {
+            inherit version;
+            pname = "jupyterhub-yarnspawner";
+            sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
+          };
+
+          doCheck = false;
+
+          buildInputs = [ pkgs.python3Packages.jupyterhub (python3Packages.buildPythonPackage rec {
+            pname = "skein";
+            version = "0.8.2";
+            src = python3Packages.fetchPypi {
+                inherit pname version;
+                hash = "sha256-nXTqsJNX/LwAglPcPZkmdYPfF+vDLN+nNdZaDFTrHzE=";
+            };
+
+            # Update this hash if bumping versions
+            jarHash = "sha256-x2KH6tnoG7sogtjrJvUaxy0PCEA8q/zneuI969oBOKo=";
+            skeinJar = callPackage ./skeinjar.nix { inherit pname version jarHash; };
+
+            propagatedBuildInputs = [ python3Packages.cryptography python3Packages.grpcio python3Packages.pyyaml ];
+            buildInputs = [ python3Packages.grpcio-tools ];
+
+            patches = [ ./test.patch ];
+
+            preBuild = ''
+                # Ensure skein.jar exists skips the maven build in setup.py
+                mkdir -p skein/java
+                ln -s ${skeinJar} skein/java/skein.jar
+            '';
+
+            postPatch = ''
+                substituteInPlace skein/core.py --replace "'yarn'" "'${hadoop}/bin/yarn'" \
+                --replace "else 'java'" "else '${hadoop.jdk}/bin/java'"
+            '';
+
+            pythonImportsCheck = [ "skein" ];
+
+            checkInputs = [ python3Packages.pytestCheckHook ];
+            # These tests require connecting to a YARN cluster. They could be done through NixOS tests later.
+            disabledTests = [
+                "test_ui"
+                "test_tornado"
+                "test_kv"
+                "test_core"
+                "test_cli"
+            ];
+
+            meta = with lib; {
+                homepage = "https://jcristharif.com/skein";
+                description = "A tool and library for easily deploying applications on Apache YARN";
+                license = licenses.bsd3;
+                maintainers = with maintainers; [ alexbiehl illustris ];
+                # https://github.com/NixOS/nixpkgs/issues/48663#issuecomment-1083031627
+                # replace with https://github.com/NixOS/nixpkgs/pull/140325 once it is merged
+                broken = lib.traceIf python3Packages.isPy27 "${pname} not supported on ${python.executable}" python3Packages.isPy27;
+            };
+        }) pkgs.python3Packages.pytest pkgs.python3Packages.notebook pkgs.python3Packages.jupyterhub pkgs.python3Packages.jupyterlab ];
+        })
+      ]));
+      extraConfig = ''
+        c.JupyterHub.hub_ip = '127.0.0.1'
+        c.YarnSpawner.debug = True
+        c.Authenticator.admin_users = { 'xpert' }
+        c.YarnSpawner.localize_files = {
+            'environment': 'hdfs:///environments/example.tar.gz'
+        }
+        c.YarnSpawner.prologue = 'source environment/bin/activate'
+      '';
+    };
+
+security.pam.services."jupyterhub".setLoginUid = true;
 
   #*---settings node-exporter---
   services.prometheus =
@@ -324,34 +446,31 @@
   };
 
   services.hadoop = {
-    hdfs.namenode.enable = false;
-    hdfs.datanode.enable = false;
-    yarn.nodemanager.enable = false;
-    yarn.resourcemanager.enable = false;
-    # coreSite = {
-    # "fs.defaultFS" = "hdfs://127.0.0.1:9000";
-    # "yarn.scheduler.capacity.root.queues" = "default";
-    # "yarn.scheduler.capacity.root.default.capacity" = 100;
-    # }; 
-    # hdfsSite = { 
-    # "dfs.namenode.name.dir" = "/home/hadoop/data/nameNode";
-    # "dfs.datanode.data.dir" = "/home/hadoop/data/dataNode";
-    # "dfs.replication" = 1;
-    #     };
-    # yarnSite = {
-    # #"yarn.nodemanager.hostname" = "127.0.0.1"; 
-    # "yarn.resourcemanager.hostname" = "127.0.0.1";
-    # "yarn.nodemanager.log-dirs" = "/home/hadoop/logs/nodemanager";
-    # "yarn.nodemanager.aux-services" = "mapreduce_shuffle";
-    # "yarn.acl.enable" = 0;
-    # };
-    # mapredSite = {
-    # "mapreduce.framework.name" = "yarn";
-    # "yarn.app.mapreduce.am.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
-    # "mapreduce.map.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
-    # "mapreduce.reduce.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+    hdfs.namenode.enable = true;
+    hdfs.datanode.enable = true;
+    yarn.nodemanager.enable = true;
+    yarn.resourcemanager.enable = true;
+    coreSite = {
+    "fs.defaultFS" = "hdfs://127.0.0.1:9000";
+    "yarn.scheduler.capacity.root.queues" = "default";
+    "yarn.scheduler.capacity.root.default.capacity" = 100;
+    }; 
+    hdfsSite = { 
+    "dfs.replication" = 1;
+        };
+    yarnSite = {
+    "yarn.nodemanager.hostname" = "127.0.0.1"; 
+    "yarn.resourcemanager.hostname" = "127.0.0.1";
+    "yarn.nodemanager.aux-services" = "mapreduce_shuffle";
+    "yarn.acl.enable" = 0;
+    };
+    mapredSite = {
+    "mapreduce.framework.name" = "yarn";
+    "yarn.app.mapreduce.am.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+    "mapreduce.map.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+    "mapreduce.reduce.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
 
-    # };
+    };
   };
 
   security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];
