@@ -3,9 +3,10 @@
   inputs.test = { url = "github:abhishekadhikari23/nix-pkg-module-boilerplate"; };
   inputs.systemd-controller = { url = "git+ssh://git@tree.mn/autoopt-hadoop-devops/remote-systemd-controller.git"; };
   inputs.elasticsearch = { url = "path:/home/xpert/Work/es8-deploy"; };
+  inputs.netmaker = { url = "path:/home/xpert/Work/netclient-pkg"; };
   inputs.jupyterhub1 = { url = "path:/home/xpert/Work/jupyterhub"; };
   inputs.vscode-server.url = "github:msteen/nixos-vscode-server";
-  outputs = { self, nixpkgs, test, systemd-controller, elasticsearch, vscode-server, jupyterhub1 }:
+  outputs = { self, nixpkgs, netmaker, test, systemd-controller, elasticsearch, vscode-server, jupyterhub1 }:
     let
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
@@ -26,7 +27,7 @@
           # })
           ./configuration.nix
         ];
-        specialArgs = { inherit test; inherit elasticsearch; inherit jupyterhub1; };
+        specialArgs = { inherit test; inherit elasticsearch; inherit jupyterhub1; inherit netmaker; };
       };
     };
 }
