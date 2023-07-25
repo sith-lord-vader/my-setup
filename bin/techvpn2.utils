@@ -1,0 +1,7 @@
+#!/usr/bin/env expect
+
+set pass [lindex $argv 0]
+
+eval spawn sudo openvpn --config /home/xpert/.vpn/techvpn2.ovpn
+send "$pass\r"
+interact

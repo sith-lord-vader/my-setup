@@ -125,6 +125,10 @@
 
           export PATH=$HOME/.my-setup/bin:$PATH
           alias ssh="ssh -A"
+
+          source $HOME/.bitwarden-keys.sh
+          setup_bitwarden
+          export BW_SESSION=$(bw unlock --passwordenv BW_MASTER --raw)
         '';
         shellAliases = {
           ne = "nix-env";
@@ -165,11 +169,13 @@
     #*---work---
     exfat
     wget
+    expect
     git
     google-chrome
     vscode
     python3
     openvpn
+    bitwarden-cli
     docker
     anydesk
     openssl
