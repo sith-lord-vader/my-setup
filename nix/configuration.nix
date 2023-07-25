@@ -1,15 +1,12 @@
-{ config, lib, pkgs, netmaker, test, elasticsearch, jupyterhub1, ... }:
+{ config, lib, pkgs, home-manager, ... }:
 
 {
   imports =
     [
       ./machine/mnet.nix
-      ./modules/wireguard.nix
+      #./modules/wireguard.nix
+      home-manager.nixosModules.home-manager
     ];
-
-  nixpkgs.overlays = [
-    (_: _: { test = test.defaultPackage.x86_64-linux; })
-  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
@@ -18,20 +15,19 @@
   services.flatpak.enable = true;
 
   #*----Bootloader----
-  # boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.loader.grub = {
-    devices = [ "nodev" ];
-    enable = true;
-    version = 2;
-    useOSProber = true;
-    efiSupport = true;
-  };
+  boot.loader.systemd-boot.enable = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  #boot.loader.grub = {
+  #  devices = [ "nodev" ];
+  #  enable = true;
+  #  useOSProber = true;
+  #  efiSupport = true;
+  #};
   #!----Bootloader----
 
   #*----Networking----
-  networking.hostName = "nixos";
+  networking.hostName = "death-star";
   # networking.wireless.enable = true;
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -88,14 +84,70 @@
     description = "Abhishek Adhikari";
     extraGroups = [ "networkmanager" "wheel" "docker" "lxd" "rslsync" "nginx" ];
     packages = with pkgs; [
-      firefox
-      kate
     ];
   };
 
-  users.users.rslsync = {
-    extraGroups = [ "shared" ];
+  home-manager.users.xpert = {
+    home.stateVersion = "23.05";
+    home.username = "xpert";
+    home.homeDirectory = "/home/xpert";
+    programs.home-manager.enable = true;
+
+    programs = {
+      zsh = {
+        enable = true;
+        enableCompletion = false; # enabled in oh-my-zsh
+        initExtra = ''
+          autoload -U up-line-or-beginning-search
+          autoload -U down-line-or-beginning-search
+          zle -N up-line-or-beginning-search
+          zle -N down-line-or-beginning-search
+          bindkey "''${key[Up]}" up-line-or-beginning-search
+          bindkey "''${key[Down]}" down-line-or-beginning-search
+          bindkey "''${key[Up]}" up-line-or-search
+          test -f ~/.dir_colors && eval $(dircolors ~/.dir_colors)
+          #neofetch
+          [ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)"
+
+          sudo () {
+            local command=$@
+            read -r "REPLY?Authorize command $(echo \"$@\") be  executed? (y/N): "
+            if [[ "$REPLY" = [yY]* ]]; then
+              command sudo "$@"
+            else
+              return $?
+            fi
+          }
+
+          export PATH=$HOME/.my-setup/bin:$PATH
+          alias ssh="ssh -A"
+        '';
+        shellAliases = {
+          ne = "nix-env";
+          ni = "nix-env -iA";
+          no = "nixops";
+          ns = "nix-shell --pure";
+          please = "sudo";
+          cls = "clear";
+        };
+        zplug = {
+          enable = true;
+          plugins = [
+            { name = "zsh-users/zsh-autosuggestions"; }
+            { name = "zsh-users/zsh-syntax-highlighting"; }
+            { name = "zdharma-continuum/fast-syntax-highlighting"; }
+            { name = "marlonrichert/zsh-autocomplete"; tags = [ depth:1 ]; }
+          ];
+        };
+        oh-my-zsh = {
+          enable = true;
+          plugins = [ "git" "python" "vscode" "docker" ];
+          theme = "agnoster";
+        };
+      };
+    };
   };
+
   #!----User Account----
 
   #*----Fonts----
@@ -113,13 +165,6 @@
     google-chrome
     vscode
     python3
-    bitwarden
-    bitwarden-cli
-    home-manager
-    zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    oh-my-zsh
     openvpn
     docker
     anydesk
@@ -145,7 +190,7 @@
     #!---misc---
 
     #*---test pkgs---
-    pkgs.test
+    #pkgs.test
     # elasticsearch.packages.x86_64-linux.elasticsearch8
     #!---test pkgs---
   ];
@@ -164,220 +209,17 @@
   users.defaultUserShell = pkgs.zsh;
 
   #*----User Access Settings----
-  # services.fprintd.enable = true;
-  # security.pam.services.login.fprintAuth = true;
+  #services.fprintd.enable = false;
+  #security.pam.services.login.fprintAuth = false;
   security.sudo.wheelNeedsPassword = false;
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
-
-  services.pkg_name =
-    {
-      enable = false;
-      example_option = "Please visit lordvader.me";
-    };
 
   #*----Firewall----
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = false;
   #!----Firewall----
-
-  # jupyterhub-yarnspawner = pkgs.python3Packages.buildPythonPackage rec {
-  #   pname = "jupyterhub-yarnspawner";
-  #   version = "0.4.0";
-
-  #   src = pkgs.python37Packages.fetchPypi {
-  #     inherit version;
-  #     inherit pname;
-  #     sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
-  #   };
-
-  #   buildInputs = [ pkgs.python3Packages.jupyterhub pkgs.python3Packages.skein ];
-  # };
-
-  #!----Jupyterhub----
-  services.jupyterhub =
-    {
-      enable = true;
-      spawner = "yarnspawner.YarnSpawner";
-      authentication = "dummyauthenticator.DummyAuthenticator";
-      jupyterhubEnv = (pkgs.python39.withPackages (pythonPackages: with pythonPackages; [
-        jupyterhub
-        jupyterhub1.packages.x86_64-linux.skein
-        jupyterlab
-        (pkgs.python39Packages.buildPythonPackage rec {
-          pname = "yarnspawner";
-          version = "0.4.0";
-
-          src = pkgs.python39Packages.fetchPypi {
-            inherit version;
-            pname = "jupyterhub-yarnspawner";
-            sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
-          };
-
-          doCheck = false;
-
-          buildInputs = [ pkgs.python39Packages.jupyterhub jupyterhub1.packages.x86_64-linux.skein pkgs.python39Packages.pytest pkgs.python39Packages.notebook pkgs.python39Packages.jupyterlab  ];
-        })
-        (pkgs.python39Packages.buildPythonPackage rec {
-          pname = "dummyauthenticator";
-          version = "0.3.1";
-
-          src = pkgs.python39Packages.fetchPypi {
-            inherit version;
-            pname = "jupyterhub-dummyauthenticator";
-            sha256 = "1be23aecd2745a5a24fb41e0bb2cab52f49a1f1e78204ca2c31bb43f486f982a";
-          };
-
-          doCheck = false;
-
-          buildInputs = [ pkgs.python39Packages.jupyterhub pkgs.python39Packages.notebook  pkgs.python39Packages.jupyterlab  ];
-        })
-      ]));
-      extraConfig = ''
-        c.JupyterHub.hub_ip = '127.0.0.1'
-        c.YarnSpawner.debug = True
-        c.Authenticator.admin_users = { 'xpert' }
-        c.YarnSpawner.localize_files = {
-            'environment': 'hdfs:///environments/example.tar.gz'
-        }
-        c.YarnSpawner.prologue = 'source environment/bin/activate'
-      '';
-    };
-  #!------------------
-
-    # services.jupyterhub =
-    # {
-    #   enable = true;
-    #   port = 8082;
-    #   spawner = "yarnspawner.YarnSpawner";
-    #   jupyterhubEnv = (pkgs.python3.withPackages (pythonPackages: with pythonPackages; [
-    #     jupyterhub
-    #     (pkgs.python3Packages.buildPythonPackage rec {
-    #         pname = "skein";
-    #         version = "0.8.2";
-    #         src = pkgs.python3Packages.fetchPypi {
-    #             inherit pname version;
-    #             hash = "sha256-nXTqsJNX/LwAglPcPZkmdYPfF+vDLN+nNdZaDFTrHzE=";
-    #         };
-
-    #         # Update this hash if bumping versions
-    #         jarHash = "sha256-x2KH6tnoG7sogtjrJvUaxy0PCEA8q/zneuI969oBOKo=";
-    #         skeinJar = callPackage ./skeinjar.nix { inherit pname version jarHash; };
-
-    #         propagatedBuildInputs = [ pkgs.python3Packages.cryptography pkgs.python3Packages.grpcio pkgs.python3Packages.pyyaml ];
-    #         buildInputs = [ pkgs.python3Packages.grpcio-tools ];
-
-    #         patches = [ ./test.patch ];
-
-    #         preBuild = ''
-    #             # Ensure skein.jar exists skips the maven build in setup.py
-    #             mkdir -p skein/java
-    #             ln -s ${skeinJar} skein/java/skein.jar
-    #         '';
-
-    #         postPatch = ''
-    #             substituteInPlace skein/core.py --replace "'yarn'" "'${pkgs.hadoop}/bin/yarn'" \
-    #             --replace "else 'java'" "else '${pkgs.hadoop.jdk}/bin/java'"
-    #         '';
-
-    #         pythonImportsCheck = [ "skein" ];
-
-    #         checkInputs = [ pkgs.python3Packages.pytestCheckHook ];
-    #         # These tests require connecting to a YARN cluster. They could be done through NixOS tests later.
-    #         disabledTests = [
-    #             "test_ui"
-    #             "test_tornado"
-    #             "test_kv"
-    #             "test_core"
-    #             "test_cli"
-    #         ];
-
-    #         meta = with lib; {
-    #             homepage = "https://jcristharif.com/skein";
-    #             description = "A tool and library for easily deploying applications on Apache YARN";
-    #             license = licenses.bsd3;
-    #             maintainers = with maintainers; [ alexbiehl illustris ];
-    #             # https://github.com/NixOS/nixpkgs/issues/48663#issuecomment-1083031627
-    #             # replace with https://github.com/NixOS/nixpkgs/pull/140325 once it is merged
-    #         };
-    #     })
-    #     jupyterlab
-    #     (pkgs.python3Packages.buildPythonPackage rec {
-    #       pname = "yarnspawner";
-    #       version = "0.4.0";
-
-    #       src = pkgs.python37Packages.fetchPypi {
-    #         inherit version;
-    #         pname = "jupyterhub-yarnspawner";
-    #         sha256 = "3b82130c81a31981d929012c628feb7d6d7ec98aeba17946f668fe42023c826b";
-    #       };
-
-    #       doCheck = false;
-
-    #       buildInputs = [ pkgs.python3Packages.jupyterhub (pkgs.python3Packages.buildPythonPackage rec {
-    #         pname = "skein";
-    #         version = "0.8.2";
-    #         src = pkgs.python3Packages.fetchPypi {
-    #             inherit pname version;
-    #             hash = "sha256-nXTqsJNX/LwAglPcPZkmdYPfF+vDLN+nNdZaDFTrHzE=";
-    #         };
-
-    #         # Update this hash if bumping versions
-    #         jarHash = "sha256-x2KH6tnoG7sogtjrJvUaxy0PCEA8q/zneuI969oBOKo=";
-    #         skeinJar = callPackage ./skeinjar.nix { inherit pname version jarHash; };
-
-    #         propagatedBuildInputs = [ pkgs.python3Packages.cryptography pkgs.python3Packages.grpcio pkgs.python3Packages.pyyaml ];
-    #         buildInputs = [ pkgs.python3Packages.grpcio-tools ];
-
-    #         patches = [ ./test.patch ];
-
-    #         preBuild = ''
-    #             # Ensure skein.jar exists skips the maven build in setup.py
-    #             mkdir -p skein/java
-    #             ln -s ${skeinJar} skein/java/skein.jar
-    #         '';
-
-    #         postPatch = ''
-    #             substituteInPlace skein/core.py --replace "'yarn'" "'${pkgs.hadoop}/bin/yarn'" \
-    #             --replace "else 'java'" "else '${pkgs.hadoop.jdk}/bin/java'"
-    #         '';
-
-    #         pythonImportsCheck = [ "skein" ];
-
-    #         checkInputs = [ pkgs.python3Packages.pytestCheckHook ];
-    #         # These tests require connecting to a YARN cluster. They could be done through NixOS tests later.
-    #         disabledTests = [
-    #             "test_ui"
-    #             "test_tornado"
-    #             "test_kv"
-    #             "test_core"
-    #             "test_cli"
-    #         ];
-
-    #         meta = with lib; {
-    #             homepage = "https://jcristharif.com/skein";
-    #             description = "A tool and library for easily deploying applications on Apache YARN";
-    #             license = licenses.bsd3;
-    #             maintainers = with maintainers; [ alexbiehl illustris ];
-    #             # https://github.com/NixOS/nixpkgs/issues/48663#issuecomment-1083031627
-    #             # replace with https://github.com/NixOS/nixpkgs/pull/140325 once it is merged
-    #         };
-    #     }) pkgs.python3Packages.pytest pkgs.python3Packages.notebook pkgs.python3Packages.jupyterhub pkgs.python3Packages.jupyterlab ];
-    #     })
-    #   ]));
-    #   extraConfig = ''
-    #     c.JupyterHub.hub_ip = '127.0.0.1'
-    #     c.YarnSpawner.debug = True
-    #     c.Authenticator.admin_users = { 'xpert' }
-    #     c.YarnSpawner.localize_files = {
-    #         'environment': 'hdfs:///environments/example.tar.gz'
-    #     }
-    #     c.YarnSpawner.prologue = 'source environment/bin/activate'
-    #   '';
-    # };
-
-security.pam.services."jupyterhub".setLoginUid = true;
 
   #*---settings node-exporter---
   services.prometheus =
@@ -392,77 +234,7 @@ security.pam.services."jupyterhub".setLoginUid = true;
     };
   #!---settings node-exporter---
 
-  services.stormtrooper = {
-    enable = true;
-    hostname = "nixos";
-    address = "0.0.0.0";
-    port = "9999";
-  };
-
-  services.darth-vader = {
-    enable = true;
-    port = "8002";
-  };
-
-  services.resilio = {
-    enable = true;
-    httpListenPort = 6969;
-    enableWebUI = true;
-  };
-
-  services.nginx = {
-    enable = true;
-    group = "nginx";
-    recommendedGzipSettings = true;
-    recommendedOptimisation = true;
-    # upstreams.adc-data-es-upstreams.servers = {
-    #   "172.20.32.183:9200" = {};
-    #   "172.20.32.184:9200" = {};
-    #   "172.20.32.185:9200" = {};
-    # };
-
-    virtualHosts."resilio.xpert-nixos-local.vader" = {
-      addSSL = true;
-      listen = [
-        {
-          addr = "0.0.0.0";
-          port = 443;
-          ssl = true;
-        }
-        {
-          addr = "0.0.0.0";
-          port = 80;
-        }
-      ];
-      sslCertificate = "/etc/MyCert.crt";
-      sslCertificateKey = "/etc/MyPrivate.key";
-      locations."/" = {
-        proxyPass = "http://localhost:6969";
-      };
-    };
-
-    virtualHosts."resilio.xpert-nixos.vader" = {
-      addSSL = true;
-      listen = [
-        {
-          addr = "0.0.0.0";
-          port = 443;
-          ssl = true;
-        }
-        {
-          addr = "0.0.0.0";
-          port = 80;
-        }
-      ];
-      sslCertificate = "/etc/MyCertMain.crt";
-      sslCertificateKey = "/etc/MyPrivate.key";
-      locations."/" = {
-        proxyPass = "http://localhost:6969";
-      };
-    };
-  };
-
-  programs.nix-ld.enable = true;
+  #programs.nix-ld.enable = true;
   environment.variables = {
       NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
         pkgs.stdenv.cc.cc
@@ -470,46 +242,9 @@ security.pam.services."jupyterhub".setLoginUid = true;
       NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
   };
 
-  services.hadoop = {
-    hdfs.namenode.enable = true;
-    hdfs.datanode.enable = true;
-    yarn.nodemanager.enable = true;
-    yarn.resourcemanager.enable = true;
-    coreSite = {
-    "fs.defaultFS" = "hdfs://127.0.0.1:9000";
-    "yarn.scheduler.capacity.root.queues" = "default";
-    "yarn.scheduler.capacity.root.default.capacity" = 100;
-    "hadoop.proxyuser.jupyterhub.hosts" = "*";
-    "hadoop.proxyuser.jupyterhub.groups" = "*";
-    "hadoop.proxyuser.root.hosts" = "*";
-    "hadoop.proxyuser.root.groups" = "*";
-    }; 
-    hdfsSite = { 
-    "dfs.replication" = 1;
-        };
-    yarnSite = {
-    "yarn.nodemanager.hostname" = "127.0.0.1"; 
-    "yarn.resourcemanager.hostname" = "127.0.0.1";
-    "yarn.nodemanager.aux-services" = "mapreduce_shuffle";
-    "yarn.acl.enable" = 0;
-    };
-    mapredSite = {
-    "mapreduce.framework.name" = "yarn";
-    "yarn.app.mapreduce.am.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
-    "mapreduce.map.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
-    "mapreduce.reduce.env" = "HADOOP_MAPRED_HOME=$HADOOP_HOME";
+  environment.shells = with pkgs; [ zsh ];
 
-    };
-  };
+  #security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];
 
-  security.pki.certificateFiles = [ "/home/xpert/.my-setup/OpenWrt.pem" "/etc/CAPrivate.pem" ];
-
-  # services.kibana8 = {
-  #   enable = true;
-  #   package = elasticsearch.packages.x86_64-linux.kibana8;
-  #   listenAddress = "0.0.0.0";
-  #   elasticsearch.hosts = ["http://172.20.32.183:9200" "http://172.20.32.184:9200" "http://172.20.32.185:9200"];
-  # };
-
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.05";
 }
