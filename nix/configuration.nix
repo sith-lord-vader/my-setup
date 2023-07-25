@@ -111,11 +111,15 @@
 
           sudo () {
             local command=$@
-            read -r "REPLY?Authorize command $(echo \"$@\") be  executed? (y/N): "
-            if [[ "$REPLY" = [yY]* ]]; then
+            if [[ "$command" =~ -y ]]; then
               command sudo "$@"
             else
-              return $?
+              read -r "REPLY?Authorize command $(echo \"$@\") be  executed? (y/N): "
+              if [[ "$REPLY" = [yY]* ]]; then
+                command sudo "$@"
+              else
+                return $?
+              fi
             fi
           }
 
