@@ -1,4 +1,4 @@
-{ config, lib, pkgs, home-manager, ... }:
+{ config, lib, pkgs, home-manager, vscode-server, ... }:
 
 {
   imports =
@@ -6,6 +6,7 @@
       ./machine/mnet.nix
       #./modules/wireguard.nix
       home-manager.nixosModules.home-manager
+      vscode-server.nixosModules.default
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -13,6 +14,7 @@
   virtualisation.docker.enable = true;
   virtualisation.lxd.enable = true;
   services.flatpak.enable = true;
+  services.vscode-server.enable = true;
 
   #*----Bootloader----
   boot.loader.systemd-boot.enable = true;
@@ -183,6 +185,7 @@
     neofetch
     wireguard-tools
     ksshaskpass
+    inetutils
     # netmaker.packages.x86_64-linux.netmaker
     #!---work---
 
@@ -244,13 +247,13 @@
     };
   #!---settings node-exporter---
 
-  #programs.nix-ld.enable = true;
-  environment.variables = {
-      NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
-        pkgs.stdenv.cc.cc
-      ];
-      NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
-  };
+  programs.nix-ld.enable = true;
+  #environment.variables = {
+  #    NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+  #      pkgs.stdenv.cc.cc
+  #    ];
+  #    #NIX_LD = lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
+  #};
 
   environment.shells = with pkgs; [ zsh ];
 
