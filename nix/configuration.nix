@@ -186,6 +186,7 @@
     wireguard-tools
     ksshaskpass
     inetutils
+    terraform
     # netmaker.packages.x86_64-linux.netmaker
     #!---work---
 
@@ -200,6 +201,9 @@
     keystore-explorer
     guake
     cool-retro-term
+    logseq
+    spotify
+    spotify-tray
     #!---misc---
 
     #*---test pkgs---
