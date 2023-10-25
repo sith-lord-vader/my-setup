@@ -202,6 +202,8 @@
     guake
     cool-retro-term
     logseq
+    spotify
+    spotify-tray
     #!---misc---
 
     #*---test pkgs---
