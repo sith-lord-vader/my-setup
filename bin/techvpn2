@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-techvpn2.utils "$(bw get totp techvpn2)"
+techvpn2.utils "$(bw get totp ovpn-techvpn2)"

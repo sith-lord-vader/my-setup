@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-techvpn3.utils "$(bw get totp 6f2c3e42-1d2f-43ef-8b52-b0180069e174)"
+techvpn3.utils "$(bw get totp ovpn-techvpn3)"
