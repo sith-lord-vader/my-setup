@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+vpn.utils "$(bw get totp ovpn-vpn)"

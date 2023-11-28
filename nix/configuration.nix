@@ -9,7 +9,16 @@
       vscode-server.nixosModules.default
     ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+    auto-optimise-store = true;
+  };
+  
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
   nixpkgs.config.allowUnfree = true;
   virtualisation.docker.enable = true;
   virtualisation.lxd.enable = true;
@@ -17,7 +26,10 @@
   services.vscode-server.enable = true;
 
   #*----Bootloader----
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot = {
+    enable = true;
+    configurationLimit = 5;
+  };
   #boot.loader.efi.canTouchEfiVariables = true;
   #boot.loader.efi.efiSysMountPoint = "/boot/efi";
   #boot.loader.grub = {
@@ -187,6 +199,7 @@
     ksshaskpass
     inetutils
     terraform
+    nodejs_20
     # netmaker.packages.x86_64-linux.netmaker
     #!---work---
 
