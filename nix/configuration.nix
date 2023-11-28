@@ -200,6 +200,7 @@
     inetutils
     terraform
     nodejs_20
+    gnupg
     # netmaker.packages.x86_64-linux.netmaker
     #!---work---
 
@@ -217,6 +218,7 @@
     logseq
     spotify
     spotify-tray
+    pinentry
     #!---misc---
 
     #*---test pkgs---
@@ -244,6 +246,12 @@
   security.sudo.wheelNeedsPassword = false;
   services.gnome.gnome-keyring.enable = true;
   #!----User Access Settings----
+
+  services.pcscd.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryFlavor = "curses";
+  };
 
   #*----Firewall----
   # networking.firewall.allowedTCPPorts = [ ... ];
