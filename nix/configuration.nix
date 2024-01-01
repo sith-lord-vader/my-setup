@@ -1,7 +1,9 @@
 { config, lib, pkgs, home-manager, vscode-server, ... }:
 
 {
-  imports =
+  imports = let
+
+  in
     [
       ./machine/mnet.nix
       #./modules/wireguard.nix
@@ -19,7 +21,16 @@
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
-  nixpkgs.config.allowUnfree = true;
+  
+  nixpkgs.config = {
+    # Allow unfree packages
+    allowUnfree = true;
+  };
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-25.9.0"
+  ];
+  
   virtualisation.docker.enable = true;
   virtualisation.lxd.enable = true;
   services.flatpak.enable = true;
@@ -68,6 +79,7 @@
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
   services.xserver = {
     layout = "us";
     xkbVariant = "";
@@ -91,6 +103,7 @@
   };
   #!----Sound Settings----
 
+  networking.nameservers = [ "10.0.0.1" ];
 
   #*----User Account----
   users.users.xpert = {
@@ -173,7 +186,7 @@
   #!----User Account----
 
   #*----Fonts----
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "Hack" "Meslo" ]; })
   ];
   #!----Fonts----
@@ -205,6 +218,8 @@
     #!---work---
 
     #*---misc---
+    rustdesk
+    rustdesk-server
     hollywood
     discord
     obs-studio
@@ -271,6 +286,15 @@
       };
     };
   #!---settings node-exporter---
+
+  services.grafana = {
+    enable = true; 
+    settings = {
+      server = {
+      };
+    };
+  };
+
 
   programs.nix-ld.enable = true;
   #environment.variables = {
