@@ -214,6 +214,7 @@
     terraform
     nodejs_20
     gnupg
+    tmux-cssh
     # netmaker.packages.x86_64-linux.netmaker
     #!---work---
 
