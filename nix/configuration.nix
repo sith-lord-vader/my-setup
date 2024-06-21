@@ -235,6 +235,7 @@
     spotify
     spotify-tray
     pinentry
+    libsForQt5.kcalc
     #!---misc---
 
     #*---test pkgs---

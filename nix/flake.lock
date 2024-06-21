@@ -52,6 +52,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-mirror": {
+      "locked": {
+        "lastModified": 1711540098,
+        "narHash": "sha256-Hw5b+5Adp/q82l5RwG4Utd0N5aSaSL3YYFQx8A26sh0=",
+        "ref": "es8",
+        "rev": "c12aa2dd0c54ab27eee64730542c48c067918837",
+        "revCount": 589821,
+        "type": "git",
+        "url": "file:///home/xpert/work/nixpkgs-mirror"
+      },
+      "original": {
+        "ref": "es8",
+        "type": "git",
+        "url": "file:///home/xpert/work/nixpkgs-mirror"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1703438236,
@@ -86,6 +102,7 @@
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-mirror": "nixpkgs-mirror",
         "vscode-server": "vscode-server"
       }
     },
