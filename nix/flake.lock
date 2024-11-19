@@ -1,5 +1,41 @@
 {
   "nodes": {
+    "certify-rebellion": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1720670711,
+        "narHash": "sha256-kyuI6tc8UDCewfoaB9Gchi5bmkuozoGna0LyIITMkSE=",
+        "ref": "refs/heads/master",
+        "rev": "723efaba5f43d34f71a23275db00c93106751cd7",
+        "revCount": 21,
+        "type": "git",
+        "url": "file:///home/xpert/work/certify-rebellion"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/xpert/work/certify-rebellion"
+      }
+    },
+    "cloudflare-warp": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1724915609,
+        "narHash": "sha256-lUW4rM9aSpV6nN0C5BduzLwbFNSurC+zoqfEwfNZGUw=",
+        "ref": "refs/heads/master",
+        "rev": "08267cbabbb6602bbed033729234eb4e94b22047",
+        "revCount": 3,
+        "type": "git",
+        "url": "file:///home/xpert/work/cloudflare-warp-nix"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/xpert/work/cloudflare-warp-nix"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -20,7 +56,7 @@
     },
     "home-manager": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
         "lastModified": 1703674883,
@@ -38,15 +74,15 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1703255338,
-        "narHash": "sha256-Z6wfYJQKmDN9xciTwU3cOiOk+NElxdZwy/FiHctCzjU=",
-        "owner": "NixOS",
+        "lastModified": 1720418205,
+        "narHash": "sha256-cPJoFPXU44GlhWg4pUk9oUPqurPlCFZ11ZQPk21GTPU=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "6df37dc6a77654682fe9f071c62b4242b5342e04",
+        "rev": "655a58a72a6601292512670343087c2d75d859c1",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "owner": "nixos",
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
@@ -70,11 +106,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1703438236,
-        "narHash": "sha256-aqVBq1u09yFhL7bj1/xyUeJjzr92fXVvQSSEx6AdB1M=",
+        "lastModified": 1724819573,
+        "narHash": "sha256-GnR7/ibgIH1vhoy8cYdmXE6iyZqKqFxQSVkFgosBh6w=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5f64a12a728902226210bf01d25ec6cbb9d9265b",
+        "rev": "71e91c409d1e654808b2621f28a327acfdad8dc2",
         "type": "github"
       },
       "original": {
@@ -85,6 +121,38 @@
       }
     },
     "nixpkgs_3": {
+      "locked": {
+        "lastModified": 1703255338,
+        "narHash": "sha256-Z6wfYJQKmDN9xciTwU3cOiOk+NElxdZwy/FiHctCzjU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6df37dc6a77654682fe9f071c62b4242b5342e04",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1731676054,
+        "narHash": "sha256-OZiZ3m8SCMfh3B6bfGC/Bm4x3qc1m2SVEAlkV6iY7Yg=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "5e4fbfb6b3de1aa2872b76d49fafc942626e2add",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1672441588,
         "narHash": "sha256-jx5kxOyeObnVD44HRebKYL3cjWrcKhhcDmEYm0/naDY=",
@@ -100,8 +168,10 @@
     },
     "root": {
       "inputs": {
+        "certify-rebellion": "certify-rebellion",
+        "cloudflare-warp": "cloudflare-warp",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_4",
         "nixpkgs-mirror": "nixpkgs-mirror",
         "vscode-server": "vscode-server"
       }
@@ -124,7 +194,7 @@
     "vscode-server": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_5"
       },
       "locked": {
         "lastModified": 1684517665,
